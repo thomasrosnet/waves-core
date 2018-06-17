@@ -56,11 +56,10 @@ class InputSerializer(DetailInputSerializer):
 class ServiceSubmissionSerializer(DynamicFieldsModelSerializer,
                                   serializers.HyperlinkedRelatedField):
     """ Serialize a Service submission """
-
     class Meta:
         model = Submission
         fields = ('service', 'name', 'submission_app_name', 'form', 'jobs',
-                  'inputs', 'outputs', 'title', 'email_to')
+                  'inputs', 'outputs', 'title', 'email_to', 'params')
 
     view_name = 'wapi:v2:waves-services-submission-detail'
 
@@ -73,6 +72,7 @@ class ServiceSubmissionSerializer(DynamicFieldsModelSerializer,
     submission_app_name = serializers.CharField(read_only=True, source="api_name")
     title = serializers.CharField(write_only=True, required=False)
     email_to = serializers.CharField(write_only=True, required=False)
+    params = serializers.DictField(write_only=True, required=False)
 
     def get_jobs(self, obj):
         return reverse(viewname='wapi:v2:waves-services-submission-jobs', request=self.context['request'],
@@ -99,7 +99,7 @@ class ServiceSerializer(DynamicFieldsModelSerializer, serializers.HyperlinkedMod
     class Meta:
         model = Service
         fields = ('url', 'name', 'version', 'short_description', 'service_app_name',
-                  'jobs', 'submissions', 'form', 'created', 'updated', 'inputs')
+                  'jobs', 'submissions', 'form', 'created', 'updated', 'title', 'email_to', 'params')
         lookup_field = 'api_name'
         extra_kwargs = {
             'url': {'view_name': 'wapi:v2:waves-services-detail',
@@ -107,11 +107,14 @@ class ServiceSerializer(DynamicFieldsModelSerializer, serializers.HyperlinkedMod
                     'lookup_url_kwarg': 'service_app_name'},
         }
 
-    jobs = serializers.SerializerMethodField()
-    inputs = serializers.DictField(write_only=True)
-    submissions = serializers.SerializerMethodField()
-    form = serializers.SerializerMethodField()
-    service_app_name = serializers.CharField(source='api_name')
+    name = serializers.CharField(read_only=True)
+    jobs = serializers.SerializerMethodField(read_only=True)
+    submissions = serializers.SerializerMethodField(read_only=True)
+    form = serializers.SerializerMethodField(read_only=True)
+    service_app_name = serializers.CharField(source='api_name', read_only=True)
+    title = serializers.CharField(write_only=True, required=False)
+    email_to = serializers.CharField(write_only=True, required=False)
+    params = serializers.DictField(write_only=True, required=False)
 
     def get_submissions(self, obj):
         return [

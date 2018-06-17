@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'waves.authentication',
     'crispy_forms',
     'rest_framework',
-    'rest_framework_swagger',
     'corsheaders',
     'adminsortable2'
 ]
@@ -134,7 +133,17 @@ REST_FRAMEWORK = {
         'waves.authentication.auth.ApiKeyAuthentication',
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
+    ],
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.CoreJSONRenderer',
+    )
 }
 ALLOWED_TEMPLATE_PACKS = ['bootstrap3', 'bootstrap4']
 

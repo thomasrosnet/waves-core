@@ -11,7 +11,6 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import detail_route, permission_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -56,7 +55,6 @@ class JobViewSet(mixins.ListModelMixin,
     """
     serializer_class = JobSerializer
     queryset = Job.objects.all()
-    parser_classes = (JSONParser,)
     lookup_field = 'slug'
     lookup_url_kwarg = 'unique_id'
     filter_fields = ('_status', 'updated', 'submission')

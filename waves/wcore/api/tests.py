@@ -275,6 +275,7 @@ class WavesAPIV2TestCase(BaseAPITestCase):
                                     data=job_params,
                                     format='multipart')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        print response
         self.assertDictContainsSubset(response.data, {u'input_file': [u'File Input (:input_file:) is required field']})
 
     def test_token_auth(self):

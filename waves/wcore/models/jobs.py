@@ -175,7 +175,9 @@ class JobManager(models.Manager):
         for service_input in submission_inputs:
             # Treat only non dependent inputs first
             incoming_input = submitted_inputs.get(service_input.api_name, None)
-            logger.debug("Current Service Input: %s, %s, %s", service_input, service_input.required, incoming_input)
+            logger.debug("Current expected input: [name:%s, required:%s, type:%s]",
+                         service_input, service_input.required, service_input.param_type)
+            logger.debug("Received input: [name:%s, type:%s]", incoming_input, incoming_input.__class__)
             # test service input mandatory, without default and no value
             if service_input.required and not service_input.default and incoming_input is None:
                 raise JobMissingMandatoryParam(service_input.label, job)
@@ -785,6 +787,7 @@ class JobInputManager(models.Manager):
         if service_input.param_type == ParamType.TYPE_FILE:
             if isinstance(submitted_input, File):
                 # classic uploaded file
+                logger.debug("File %s ", submitted_input.name)
                 filename = path.join(job.working_dir, submitted_input.name)
                 with open(filename, 'wb+') as uploaded_file:
                     for chunk in submitted_input.chunks():
